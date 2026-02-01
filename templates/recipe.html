@@ -1,96 +1,162 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ recipe.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 40px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom right, #f8f9fa, #e3f2fd);
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(to bottom right, #ffe5ec, #d0f4de);
             color: #333;
-            line-height: 1.6;
-        }
-        h1 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        h3 {
-            color: #2980b9;
-            margin-top: 30px;
-            font-size: 1.3rem;
-        }
-        p {
-            background-color: #ffffffcc;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            color: #1abc9c;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        a:hover {
-            color: #16a085;
-        }
-        img {
-            display: block;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* Comment section styles */
-        .comment-box {
-            margin-top: 40px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .container {
+            max-width: 900px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            padding: 30px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff6f91;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #ff9671;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed #ffd6e0;
+            padding-bottom: 5px;
+        }
+
+        img {
+            width: 300px;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+        }
+
+        .bullet-list li::before {
+            content: '🍴';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+        }
+
+        .ingredient-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ol.bullet-list {
+            counter-reset: li;
+        }
+
+        ol.bullet-list li {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        ol.bullet-list li::before {
+            content: counter(li) ".";
+            counter-increment: li;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: bold;
+            color: #ff6f91;
+        }
+
+        a {
+            color: #845ec2;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        a:hover {
+            color: #ffc75f;
         }
 
         .comment-box textarea {
             width: 100%;
             height: 120px;
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 15px;
             border-radius: 8px;
             border: 1px solid #ccc;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
         }
 
         .comment-box button {
             padding: 10px 20px;
-            background-color: #2980b9;
+            background-color: #ff6f91;
             color: white;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
         .comment-box button:hover {
-            background-color: #1f6f92;
-        }
-
-        .comments {
-            margin-top: 40px;
+            background-color: #ff4f7a;
         }
 
         .comment {
-            padding: 10px;
-            background: #ffffffcc;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
         }
 
         .comment .username {
             font-weight: bold;
-            color: #2980b9;
+            color: #845ec2;
         }
 
         .comment .created-at {
@@ -101,40 +167,65 @@
 </head>
 <body>
 
-    <h1>{{ recipe.name }}</h1>
+    <div class="container">
 
-    <img src="/recipe_image/{{ recipe.id }}" alt="{{ recipe.name }}" style="max-width:400px;">
+        <div class="card">
+            <h1>{{ recipe.name }}</h1>
+            <img src="/recipe_image/{{ recipe.id }}" alt="{{ recipe.name }} image">
+        </div>
 
-    <h3>Ingredients</h3>
-    <p>{{ recipe.ingredients }}</p>
+        <div class="card">
+            <h3>Ingredients</h3>
+            <ul class="bullet-list">
+                {% for item in recipe.ingredients.split('\n') %}
+                    {% if item.strip() %}
+                        <li>
+                            <div class="ingredient-content">
+                                <span>{{ item }}</span>
+                                <a href="https://unsplash.com/s/photos/{{ item | urlencode }}" target="_blank">[View Image]</a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
 
-    <h3>Instructions</h3>
-    <p>{{ recipe.instructions }}</p>
+        <div class="card">
+            <h3>Instructions</h3>
+            <ol class="bullet-list">
+                {% for step in recipe.instructions.split('\n') %}
+                    {% if step.strip() %}
+                        <li>{{ step }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </div>
 
-    <a href="/category/{{ recipe.category_id }}">← Back to Category</a><br>
-    <a href="/index">← Back to Home</a>
+        <div class="card comment-box">
+            <h3>Leave a Comment</h3>
+            <form action="/add_comment/{{ recipe.id }}" method="POST">
+                <textarea name="comment" placeholder="Write your comment here..." required></textarea>
+                <button type="submit">Post Comment</button>
+            </form>
+        </div>
 
-    <!-- Comment Box -->
-    <div class="comment-box">
-        <h3>Leave a Comment</h3>
-        <form action="/add_comment/{{ recipe.id }}" method="POST">
-            <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-            <button type="submit">Post Comment</button>
-        </form>
+        <div class="card comments">
+            <h3>Comments</h3>
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="username">{{ comment.user_name }}</div>
+                    <p>{{ comment.comment_text }}</p>
+                    <div class="created-at">{{ comment.created_at }}</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <a href="/category/{{ recipe.category_id }}">← Back to Category</a><br>
+            <a href="/index">← Back to Home</a>
+        </div>
+
     </div>
-
-    <!-- Display Comments -->
-    <div class="comments">
-        <h3>Comments</h3>
-        {% for comment in comments %}
-            <div class="comment">
-                <div class="username">{{ comment.user_name }}</div>
-                <p>{{ comment.comment_text }}</p>
-                <div class="created-at">{{ comment.created_at }}</div>
-            </div>
-        {% endfor %}
-    </div>
-    
 
 </body>
 </html>

@@ -42,7 +42,11 @@ def init_db():
     users = [
         ('admin', hashlib.sha256('admin'.encode()).hexdigest()),
         ('shreyash', hashlib.sha256('shreyashguptacdac'.encode()).hexdigest()),
-        ('shivam', hashlib.sha256('shivam'.encode()).hexdigest())
+        ('shivam', hashlib.sha256('shivam'.encode()).hexdigest()),
+        ('shreya', hashlib.sha256('shreya'.encode()).hexdigest()),
+        ('shreyashprabhakar', hashlib.sha256('shreyashprabhakar'.encode()).hexdigest()),
+        ('shraddha', hashlib.sha256('shraddha'.encode()).hexdigest()),
+        ('shreyashpawar', hashlib.sha256('shreyashpawar'.encode()).hexdigest())
     ]
     for username, password_hash in users:
         c.execute('SELECT id FROM users WHERE username = ?', (username,))
@@ -204,6 +208,36 @@ def recipe_image(recipe_id):
     else:
         return send_file('static/no_image.jpg', mimetype='image/jpeg')
 
+
+
+@app.route('/search_recipe', methods=['GET'])
+def search_recipe():
+    if 'logged_in' not in session:
+        flash('You must be logged in to search recipes.', 'warning')
+        return redirect(url_for('login'))
+
+    query = request.args.get('q', '').strip()
+    if not query:
+        flash('Please enter a recipe name to search.', 'danger')
+        return redirect(url_for('index'))
+
+    db = get_db()
+    recipe = db.execute('SELECT id FROM recipes WHERE LOWER(name) = LOWER(?)', (query,)).fetchone()
+
+    if recipe:
+        return redirect(url_for('recipe', recipe_id=recipe['id']))
+    else:
+        flash(f'No recipe found with the name "{query}".', 'danger')
+        return redirect(url_for('index'))
+@app.route('/suggest_recipes')
+def suggest_recipes():
+    query = request.args.get('q', '').strip()
+    db = get_db()
+    suggestions = db.execute(
+        "SELECT name FROM recipes WHERE LOWER(name) LIKE LOWER(?) LIMIT 10",
+        (f"%{query}%",)
+    ).fetchall()
+    return [row['name'] for row in suggestions]
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
